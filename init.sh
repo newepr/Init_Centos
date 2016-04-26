@@ -1,80 +1,84 @@
 #!/bin/bash
 #
 #
+# Set Linux PATH Environment Variables 
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
+export PATH
 
-function set_hostname {
 
-}
-
-function set_localtime {
-
-}
-
-function set_ipaddr {
+function set_hostname() {
 
 }
 
-function set_dns {
+function set_localtime() {
 
 }
 
-function set_yum {
+function set_ipaddr() {
 
 }
 
-function set_profile {
+function set_dns() {
 
 }
 
-function set_unlimit {
+function set_yum() {
 
 }
 
-function set_sysctl {
+function set_profile() {
 
 }
 
-function set_tty {
+function set_unlimit() {
 
 }
 
-function set_inittab {
+function set_sysctl() {
 
 }
 
-function set_selinux {
+function set_getty() {
 
 }
 
-function set_iptables {
+function set_inittab() {
 
 }
 
-function set_ssh {
+function set_selinux() {
 
 }
 
-function set_service {
+function set_iptables() {
 
 }
 
-function set_ipv6 {
+function set_ssh() {
 
 }
 
-function set_locales {
+function set_service() {
 
 }
 
-function set_dpkg {
+function set_ipv6() {
 
 }
 
-function set_rsyslog {
+function set_locales() {
 
 }
 
-function set_logrotate {
+function set_dpkg() {
+
+}
+
+function set_rsyslog() {
+
+}
+
+function set_logrotate() {
 
 }
 
