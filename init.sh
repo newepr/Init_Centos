@@ -39,7 +39,9 @@ function set_sysctl() {
 }
 
 function set_getty() {
-
+	echo -e "\033[32m >>> Configuring: Gettys ... \033[0m"
+    # Remove Unneeded Getty Instances
+    sed -e 's/\(^[2-6].*getty.*\)/#\1/' -i /etc/inittab
 }
 
 function set_inittab() {
