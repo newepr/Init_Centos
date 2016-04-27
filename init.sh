@@ -5,82 +5,92 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
+function msg() {
+	[ "$#" = "2" ] && [ "$1" = "gr" -a -n "$2" ] && echo -e "\033[32m >>> Configuring: "$2" \033[0m" || echo -e "\033[33m >>> Configure Done \033[0m"
+}
 
-function set_hostname() {
+
+function wget_install(){
+	[ "`dpkg -l|grep wget|awk '{print $2}'`" != "wget" ] && `yum install -y wget`
+}
+
+function hostname() {
+	echo -n "Please Enter Hostname:"
+	read -e OPTION
+	[ -f "/etc/sysconfig/network" ] && `sed -i 's/HOSTNAME=*/HOSTNAME='"$OPTION"'/g' /etc/sysconfig/network`
+}
+
+function localtime() {
 
 }
 
-function set_localtime() {
+function ipaddr() {
 
 }
 
-function set_ipaddr() {
+function dns() {
 
 }
 
-function set_dns() {
+function yum_repo() {
 
 }
 
-function set_yum() {
+function profile() {
 
 }
 
-function set_profile() {
+function unlimit() {
 
 }
 
-function set_unlimit() {
+function sysctl() {
 
 }
 
-function set_sysctl() {
-
-}
-
-function set_getty() {
+function getty() {
 	echo -e "\033[32m >>> Configuring: Gettys ... \033[0m"
     # Remove Unneeded Getty Instances
     sed -e 's/\(^[2-6].*getty.*\)/#\1/' -i /etc/inittab
 }
 
-function set_inittab() {
+function inittab() {
 
 }
 
-function set_selinux() {
+function selinux() {
 
 }
 
-function set_iptables() {
+function iptables() {
 
 }
 
-function set_ssh() {
+function ssh() {
 
 }
 
-function set_service() {
+function service() {
 
 }
 
-function set_ipv6() {
+function ipv6() {
 
 }
 
-function set_locales() {
+function locales() {
 
 }
 
-function set_dpkg() {
+function dpkg() {
 
 }
 
-function set_rsyslog() {
+function rsyslog() {
 
 }
 
-function set_logrotate() {
+function logrotate() {
 
 }
 
