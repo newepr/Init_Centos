@@ -11,7 +11,7 @@ function msg() {
 
 
 function bases_dpkg _install(){
-	[ "`rpm -qa|grep -w wget|awk '{print $2}'`" != "wget" ] && `yum install -y wget`
+	rpm -qa|grep -iE "ethtool|wget"|awk '{print "yum install -y " $2 }'|bash
 }
 
 function hostname() {
@@ -30,26 +30,35 @@ function localtime() {
 function ipaddr() {
 	ethcount=0
 	msg gr "Ip Address and  Netmask and Gateway"
-	REGEX_IP="^(2[0-4][0-9]|25[0-5]|1[0-9][0-9]|[1-9]?[0-9])(\.(2[0-4][0-9]|25[0-5]|1[0-9][0-9]|[1-9]?[0-9])){3}$"
-	echo -n "Please Enter IP Address:"
-	read -e IPADDR
-	[[ "$IPADDR" =~ $REGEX_IP ]] || ipaddr
-	echo -n "Please Enter Netmask:"
-	read -e NETMASK
-	[[ "$NETMASK" =~ $REGEX_IP ]] || ipaddr
-	echo -n "Please Enter Gateway:"
-	read -e GATEWAY
-	[[ "$GATEWAY" =~ $REGEX_IP ]] || ipaddr
+	IP="^(2[0-4][0-9]|25[0-5]|1[0-9][0-9]|[1-9]?[0-9])(\.(2[0-4][0-9]|25[0-5]|1[0-9][0-9]|[1-9]?[0-9])){3}$"
+	f0=1;f1=1;f2=1
 	ethcount=`lspci |grep -i "eth"|wc -l`
 	for ethname in `seq "$ethcount"`
 		do
 			((ethname-=1))	
 			if [ "`ethtool eth"$ethname" |grep -w "Link detected:"|awk '{print $3}'`" = "yes" ] then
-				
-			fi	
+				while [ "$f0" = 1 -o "$f1" = 1 -o "$f2" = 1 ] 
+					do
+						[ "$f0" = 0 ] || read -p "Enter Ipaddr:" ipaddr
+						[[ "$ipaddr" =~ $IP ]] && f0=0 || f0=1
+						[ "$f1" = 0 ] ||read -p "Enter Netmask:" netmask
+						[[ "$netmask" =~ $IP ]] && f1=0 || f1=1
+						[ "$f2" = 0 ] || read -p "Enter Gateway:" gateway
+						[[ "$gateway" =~ $IP ]] && f2=0 || f2=1
+					done
+				hwaddr=`ifconfig eth"$ethname"|grep -iw hwaddr|awk '{print $5}'`
+				mv /etc/sysconfig/network-scripts/ifcfg-eth$ethname{,.BACKUP}
+				echo "DEVICE=eth$ethname
+					HWADDR=$hwaddr
+					TYPE=Ethernet
+					ONBOOT=yes
+					NM_CONTROLLED=yes
+					BOOTPROTO=static
+					IPADDR=$ipaddr
+					NETMASK=$netmask
+					GATEWAY=$gateway "> /etc/sysconfig/network-scripts/ifcfg-$1
+			fi
 		done
-
-
 }
 
 function dns() {
@@ -89,8 +98,8 @@ function sysctl() {
 		kernel.sysrq = 0
 		kernel.core_uses_pid = 1
 		net.ipv4.tcp_syncookies = 1
-		kernel.msgmnb = 65536
-		kernel.msgmax = 65536
+		kernel.msgmnb = 65535
+		kernel.msgmax = 65535
 		kernel.shmmax = 68719476736
 		kernel.shmall = 4294967296
 		net.ipv4.tcp_max_tw_buckets = 6000
@@ -129,7 +138,6 @@ function sysctl() {
 
 function getty() {
 	msg gr "Getty"
-	echo -e "\033[32m >>> Configuring: Gettys ... \033[0m"
 	sed -e 's/\(^[2-6].*getty.*\)/#\1/' -i /etc/inittab
 }
 
